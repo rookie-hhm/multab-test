@@ -1,0 +1,1 @@
+function o(o){var t=o.scroller,e=o.scrollContainer,f=o.targetEle,l=o.duration,r=void 0===l?300:l,s=t.$el,i=e.offsetWidth,n=s.offsetWidth,c=f.offsetLeft,d=-(i-n),a=(n-f.offsetWidth)/2-c;console.log(a,"to"),a>0?a=0:a<=d&&(a=d),t.scrollTo(a,0,r)}export{o as animate};

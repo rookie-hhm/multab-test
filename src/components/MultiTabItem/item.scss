@@ -1,0 +1,12 @@
+.slide-page {
+  background: #f5f5f5;
+  box-shadow: 1px 0 5px #f5f5f5;
+  &.auto {
+    height: auto;
+    overflow: visible;
+  }
+  &.hidden {
+    height: 0;
+    overflow: hidden;
+  }
+}

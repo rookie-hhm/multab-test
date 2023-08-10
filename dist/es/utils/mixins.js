@@ -1,0 +1,1 @@
+var t={methods:{slots:function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"default",o=arguments.length>1?arguments[1]:void 0,s=this.$slots,e=this.$scopedSlots[t];return e?e(o):s[t]}}};export{t as SlotsMixin};

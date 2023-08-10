@@ -1,0 +1,37 @@
+.main-container-wrapper {
+  position: relative;
+  height: 100%;
+  /* 导航栏 */
+  .multi-tab-nav-wrapper {
+    width: 100%;
+    &.hidden {
+      opacity: 0;
+    }
+    &.sticky {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      right: 0;
+      top: 0;
+      background: #ffffff;
+    }
+    .nav-content {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      height: 50px;
+    }
+  }
+  /* 滚动 */
+  .multi-tab-wrapper {
+    position: relative;
+    .content-wrapper {
+      .slide-wrapper {
+        overflow: hidden;
+        .slide-content {
+          display: flex;
+          flex-wrap: nowrap;
+        }
+      }
+    }
+  }
+}
