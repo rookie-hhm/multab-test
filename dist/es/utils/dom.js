@@ -1,1 +1,17 @@
-function o(o,t){t=t||document.body;var e=0,f=0;for(console.log(o,t);o&&o!==t;)f+=o.offsetLeft,e+=o.offsetTop,o=o.offsetParent;return{left:f,top:e}}export{o as getOffset};
+function getOffset(child, parent) {
+  parent = parent || document.body;
+  var top = 0;
+  var left = 0;
+  console.log(child, parent);
+  while (child && child !== parent) {
+    left += child.offsetLeft;
+    top += child.offsetTop;
+    child = child.offsetParent;
+  }
+  return {
+    left: left,
+    top: top
+  };
+}
+
+export { getOffset };

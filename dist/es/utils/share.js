@@ -1,1 +1,9 @@
-var e=function(e){var r=new RegExp("\\"+(arguments.length>1&&void 0!==arguments[1]?arguments[1]:"-")+"(\\w)","g");return e.replace(r,(function(e,r){return r.toUpperCase()}))};export{e as toHump};
+var toHump = function toHump(str) {
+  var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '-';
+  var reg = new RegExp('\\' + separator + '(\\w)', 'g');
+  return str.replace(reg, function (all, letter) {
+    return letter.toUpperCase();
+  });
+};
+
+export { toHump };

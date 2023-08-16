@@ -1,5 +1,6 @@
 <template>
   <div class="content-wrapper">
+    <test />
     <multi-tab ref="multiTab" :bounce="false" :pullUpLoad="true" :initialIndex="9" @wrapperScroll="handleScroll" @scrollEnd="onScrollEnd">
       <template v-slot:header>
         <div class="top">顶部区域</div>

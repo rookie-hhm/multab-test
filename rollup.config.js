@@ -7,10 +7,14 @@ import { babel } from '@rollup/plugin-babel'
 import postcss from 'rollup-plugin-postcss'
 import clear from 'rollup-plugin-clear'
 import terser from '@rollup/plugin-terser'
+import pkg from './package.json'
+// import rename from 'rollup-plugin-rename'
+import renameNodeModules from "rollup-plugin-rename-node-modules";
 const targetDir = path.resolve(__dirname, 'dist')
+const { devDependencies, dependencies } = pkg
 export default {
   input: path.resolve(__dirname, 'src/index.js'),
-  external: ['vue'],
+  external: [...Object.keys(devDependencies), ...Object.keys(dependencies), /^\.(\/|\\).*\.scss$/],
   plugins: [
     clear({
       targets: [targetDir],
@@ -23,17 +27,38 @@ export default {
     vue(),
     babel({
       exclude: 'node_modules/**',
-      // babelHelpers: 'runtime',
+      babelHelpers: 'bundled',
       extensions: ['.js', '.vue']
     }),
-    resolve(),
     commonjs(),
-    postcss(),
-    terser()
+    resolve({
+      extensions: ['.vue', '.js', '.scss', '.jsx']
+    }),
+    renameNodeModules('dependencies'),
+    {
+      name: "style",
+      generateBundle(config, bundle) {
+        //这里可以获取打包后的文件目录以及代码code
+        const keys = Object.keys(bundle);
+
+        for (const key of keys) {
+          const bundler = bundle[key];
+          //rollup内置方法,将所有输出文件code中的.scss变成.css
+          console.log(bundler.code, 'code')
+          this.emitFile({
+            type: "asset",
+            fileName: key, //文件名名不变
+            source: bundler.code.replace(/\.scss/g, ".css"),
+          });
+        }
+      }
+    },
+    // postcss(),
+    // terser()
   ],
-  treeshake: {
-    moduleSideEffects: false
-  },
+  // treeshake: {
+  //   moduleSideEffects: false
+  // },
   output: [
     {
       format: 'es',

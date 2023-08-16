@@ -1,1 +1,37 @@
-import{typeof as o}from"../_virtual/_rollupPluginBabelHelpers.js";function t(a,n,e){this.$children.forEach((function(i){var c=i.$options.name;console.log(i.$options.name,""),console.log(a,c,"broadcast"),console.log(o(i.$emit)),c===a?i.$emit.apply(i,[n].concat(e)):t.apply(i,[a,n].concat([e]))}))}var a={methods:{dispatch:function(o,t,a){for(var n=this.$parent||this.$root,e=n.$options.name;n&&(!e||e!==o);)(n=n.$parent)&&(e=n.$options.name);n&&n.$emit.apply(n,[t].concat(a))},broadcast:function(o,a,n){t.call(this,o,a,n)}}};export{a as default};
+import { typeof as _typeof } from '../_virtual/_rollupPluginBabelHelpers.js';
+
+function _broadcast(componentName, eventName, params) {
+  this.$children.forEach(function (child) {
+    var name = child.$options.name;
+    console.log(child.$options.name, '');
+    console.log(componentName, name, 'broadcast');
+    console.log(_typeof(child.$emit));
+    if (name === componentName) {
+      child.$emit.apply(child, [eventName].concat(params));
+    } else {
+      _broadcast.apply(child, [componentName, eventName].concat([params]));
+    }
+  });
+}
+var emitter = {
+  methods: {
+    dispatch: function dispatch(componentName, eventName, params) {
+      var parent = this.$parent || this.$root;
+      var name = parent.$options.name;
+      while (parent && (!name || name !== componentName)) {
+        parent = parent.$parent;
+        if (parent) {
+          name = parent.$options.name;
+        }
+      }
+      if (parent) {
+        parent.$emit.apply(parent, [eventName].concat(params));
+      }
+    },
+    broadcast: function broadcast(componentName, eventName, params) {
+      _broadcast.call(this, componentName, eventName, params);
+    }
+  }
+};
+
+export { emitter as default };

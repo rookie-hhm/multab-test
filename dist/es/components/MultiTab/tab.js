@@ -1,1 +1,375 @@
-import{typeof as t,objectSpread2 as i}from"../../_virtual/_rollupPluginBabelHelpers.js";import{SlotsMixin as e}from"../../utils/mixins.js";import{ParentMixin as n}from"../../utils/relation.js";import l from"../Scroll/index.js";import{animate as r}from"../../utils/animate.js";import{getOffset as s}from"../../utils/dom.js";import a from"../../utils/emitter.js";import o from"./nav-title.js";var c={name:"multi-tab",provide:function(){return{multiTab:this}},mixins:[e,a,n("multiTab")],props:{lazyRender:{type:Boolean,default:!0},stickyTop:{type:[Number,Function],default:0},sticky:{type:Boolean,default:!0},initialIndex:{type:Number,default:0},pullUpLoad:{type:[Boolean,Object],default:!1}},data:function(){return{slideOptions:{autoplay:!1,startPageXIndex:0,loop:!1},slideHeight:"",minSlideHeight:0,currentPageIndex:0,initialPageIndex:0,currentScrollTo:0,headerHeight:0,currentScrollTop:0}},computed:{childrenCount:function(){return this.children?this.children.length:0},isSticky:function(){return console.log(this.currentScrollTop<=this.stickyTop,"isSticky"),console.log(Math.abs(this.currentScrollTop)>=this.headerHeight-this.stickyTop,"isSticky"),this.currentScrollTop<=this.stickyTop&&Math.abs(this.currentScrollTop)>0&&Math.abs(this.currentScrollTop)>=this.headerHeight-this.stickyTop},isShowNav:function(){return this.isSticky&&this.sticky}},watch:{currentPageIndex:function(){this.updateHeight()},headerHeight:function(){this.updateHeight()}},methods:{genHeader:function(){var t=this.slots("header");return this.headerVNode=t,t},genNav:function(t){var i=this.$createElement,e=!0;return"sticky"===t&&(e=this.isShowNav),i("div",{class:["multi-tab-nav-wrapper",t,e?"":"hidden"],style:{top:this.stickyTop+"px"}},[this.slots("nav")||this.genDefaultNav(t)])},genDefaultNav:function(){var t=this,i=this.$createElement;return i(l,{ref:"navScroll",refInFor:!0,attrs:{scrollX:!0,scrollY:!1,startX:this.initialIndex}},[i("div",{ref:"navContent",class:"nav-content"},[this.children.map((function(e,n){return i(o,{ref:"navTitle",refInFor:!0,attrs:{title:e.title,index:n},scopedSlots:{default:function(){return e.slots("title")}},nativeOn:{click:function(i){t.handleNavItemClick({item:e,index:n,event:i})}}})}))])])},handleNavItemClick:function(t){var i=t.item,e=t.index,n=t.event;this.$refs.navScroll.forEach((function(t){var i=t.$el.children[0];r({scroller:t,scrollContainer:i,targetEle:n.target})})),this.handleSlideScrollStart(),this.slide.goToPage(e,0),this.$emit("nav-item-click",i,e)},onScroll:function(i){var e=i.y;if(this.headerVNode&&(this.headerHeight=this.headerVNode[0].elm.offsetHeight),this.currentScrollTop=e,console.log(this.isSticky),this.$emit("wrapperScroll",i),this.pullUpLoad){var n=20;if("object"===t(this.pullUpLoad)){var l=this.pullUpLoad.threshold;l>0&&(n=l)}var r=this.children[this.currentPageIndex],s=this.container.scroll,a=s.maxScrollY,o=s.y,c=s.movingDirectionY;Math.abs(o)+n>=Math.abs(a)&&1===c&&!r._isPullingUp&&(r._isPullingUp=!0,this.broadcast("multi-tab-item","pullingUp-".concat(this.currentPageIndex),{index:this.currentPageIndex}))}},handleSlideScrollStart:function(){var t=this,i=this.calculateStickyTop(),e=Math.abs(this.currentScrollTop);this.children.forEach((function(n){if(t.currentPageIndex===n.index&&(n._scrollTop=e),t.isSticky){var l=n._scrollTop;n._marginTop=Math.round(e-Math.max(i,l))}else n._marginTop=0;n.$el.style.marginTop=n._marginTop+"px",n.$el.setAttribute("class","slide-page auto")}))},handleSlideScrollEnd:function(){var t=this;this.updateHeight();var i=this.calculateStickyTop(),e=Math.abs(this.currentScrollTop)-this.children[this.currentPageIndex]._marginTop,n="";this.children.forEach((function(l){if(n="hidden",l.index!==t.currentPageIndex)if(t.isSticky){var r=l._scrollTop;l._marginTop=r?e-l._scrollTop:e-i}else l._marginTop=0;else l._marginTop=0,t.isSticky||(l._scrollTop=0),n="auto";l.$el.style.marginTop=l._marginTop+"px",l.$el.setAttribute("class","slide-page ".concat(n))})),this.isSticky&&this.$nextTick((function(){t.container.scrollTo(0,-Math.max(e,i),0)}))},calculateStickyTop:function(){var t=this.$refs.navScroll[0].$el.offsetHeight+this.stickyTop,i=s(this.slide.$el,this.container.$el).top-t;return Math.round(i)},handleSlideWillChange:function(t){var i=t.pageX;this.nextPageIndex=i},handleSlidePageChanged:function(t){var i=t.pageX;this.currentPageIndex=i},updateHeight:function(){var t=this,i=this.children[this.currentPageIndex].$el,e=i.children[0];e&&(this.slideHeight=e.offsetHeight+20+"px",i._isScroll=parseFloat(this.slideHeight)>parseFloat(this.minSlideHeight),this.$nextTick((function(){t.container.scroll.refresh()})))},initialSlide:function(){var t=this,i=this.$refs,e=i.container,n=i.slide,l=i.navScroll;this.slide=n,this.container=e,this.children.forEach((function(t){t._marginTop=0,t._scrollTop=0,t._isPullingUp=!1,t._isScroll=!0})),l&&l.forEach((function(i){var e=i.$el.children[0].children[t.initialIndex];i.scrollToElement(e,0)}))}},mounted:function(){var t=this;this.$nextTick((function(){t.initialSlide();var i=t.$refs.navScroll[0].$el.offsetHeight+t.stickyTop;t.minSlideHeight=t.container.$el.clientHeight-i+"px"}))},created:function(){var t=this;this.slideOptions.startPageXIndex=this.initialIndex,this.currentPageIndex=this.initialIndex,this.$on("pullingUp",(function(i){var e=i.index,n=i.isPullingUp;t.children[e]._isPullingUp=n}))},render:function(){var t=arguments[0];return console.log(this.isSticky,"isSticky"),t("div",{class:"main-container-wrapper"},[this.genNav("sticky"),t(l,{ref:"container",class:"multi-tab-wrapper",attrs:i({nestedScroll:{groupId:"dummy-divide"}},this.$attrs),on:i({scroll:this.onScroll},this.$listeners)},[t("div",{class:"content-wrapper"},[this.genHeader(),this.genNav(),t(l,{ref:"slide",class:"slide-wrapper",attrs:{bounce:!1,scrollX:!0,scrollY:!1,observeDOM:!1,nestedScroll:{groupId:"dummy-divide"},slide:this.slideOptions},on:{scrollStart:this.handleSlideScrollStart,scrollEnd:this.handleSlideScrollEnd,slideWillChange:this.handleSlideWillChange,slidePageChanged:this.handleSlidePageChanged}},[t("div",{class:"slide-content",style:{height:this.slideHeight,"min-height":this.minSlideHeight}},[this.slots()])])])])])}};export{c as default};
+import { typeof as _typeof, objectSpread2 as _objectSpread2 } from '../../_virtual/_rollupPluginBabelHelpers.js';
+import { SlotsMixin } from '../../utils/mixins.js';
+import { ParentMixin } from '../../utils/relation.js';
+import __vue_component__ from '../Scroll/index.vue.js';
+import { animate } from '../../utils/animate.js';
+import { getOffset } from '../../utils/dom.js';
+import emitter from '../../utils/emitter.js';
+import NavTitle from '../MultiTitle/nav-title.js';
+import '../../src/components/MultiTab/tab.css';
+
+var DEFAULT_THRESHOLD = 20;
+var MultiTab = {
+  name: 'multi-tab',
+  provide: function provide() {
+    return {
+      multiTab: this
+    };
+  },
+  mixins: [SlotsMixin, emitter, ParentMixin('multiTab')],
+  props: {
+    lazyRender: {
+      type: Boolean,
+      "default": true
+    },
+    stickyTop: {
+      // 顶部吸顶的距离
+      type: [Number, Function],
+      "default": 0
+    },
+    sticky: {
+      type: Boolean,
+      "default": true
+    },
+    initialIndex: {
+      type: Number,
+      "default": 0
+    },
+    pullUpLoad: {
+      type: [Boolean, Object],
+      "default": false
+    }
+  },
+  data: function data() {
+    return {
+      slideOptions: {
+        autoplay: false,
+        startPageXIndex: 0,
+        loop: false
+      },
+      slideHeight: '',
+      minSlideHeight: 0,
+      currentPageIndex: 0,
+      initialPageIndex: 0,
+      currentScrollTo: 0,
+      headerHeight: 0,
+      currentScrollTop: 0
+      // isSticky: false, // 是否达到了吸顶条件
+    };
+  },
+
+  computed: {
+    childrenCount: function childrenCount() {
+      return this.children ? this.children.length : 0;
+    },
+    isSticky: function isSticky() {
+      console.log(this.currentScrollTop <= this.stickyTop, 'isSticky');
+      console.log(Math.abs(this.currentScrollTop) >= this.headerHeight - this.stickyTop, 'isSticky');
+      return this.currentScrollTop <= this.stickyTop && Math.abs(this.currentScrollTop) > 0 && Math.abs(this.currentScrollTop) >= this.headerHeight - this.stickyTop;
+    },
+    isShowNav: function isShowNav() {
+      return this.isSticky && this.sticky;
+    }
+  },
+  watch: {
+    currentPageIndex: function currentPageIndex() {
+      // 每次切换slide都要更新容器高度
+      this.updateHeight();
+    },
+    headerHeight: function headerHeight() {
+      this.updateHeight();
+    }
+  },
+  methods: {
+    genHeader: function genHeader() {
+      // 头部插槽
+      var header = this.slots('header');
+      this.headerVNode = header;
+      return header;
+    },
+    genNav: function genNav(type) {
+      var h = this.$createElement;
+      // 导航栏插槽
+      var isShow = true;
+      if (type === 'sticky') {
+        isShow = this.isShowNav;
+      }
+      return h("div", {
+        "class": ['multi-tab-nav-wrapper', type, !isShow ? 'hidden' : ''],
+        "style": {
+          top: this.stickyTop + 'px'
+        }
+      }, [this.slots('nav') || this.genDefaultNav(type)]);
+    },
+    genDefaultNav: function genDefaultNav() {
+      var _this = this;
+      var h = this.$createElement;
+      // 默认的导航栏
+      return h(__vue_component__, {
+        "ref": "navScroll",
+        "refInFor": true,
+        "attrs": {
+          "scrollX": true,
+          "scrollY": false,
+          "startX": this.initialIndex
+        }
+      }, [h("div", {
+        "ref": "navContent",
+        "class": "nav-content"
+      }, [this.children.map(function (item, index) {
+        return h(NavTitle, {
+          "ref": "navTitle",
+          "refInFor": true,
+          "attrs": {
+            "title": item.title,
+            "index": index
+          },
+          "scopedSlots": {
+            "default": function _default() {
+              return item.slots('title');
+            }
+          },
+          "nativeOn": {
+            "click": function click(event) {
+              _this.handleNavItemClick({
+                item: item,
+                index: index,
+                event: event
+              });
+            }
+          }
+        });
+      })])]);
+    },
+    handleNavItemClick: function handleNavItemClick(_ref) {
+      var item = _ref.item,
+        index = _ref.index,
+        event = _ref.event;
+      // 进行切换操作
+      var navScroll = this.$refs.navScroll;
+      navScroll.forEach(function (item) {
+        var navContent = item.$el.children[0];
+        animate({
+          scroller: item,
+          scrollContainer: navContent,
+          targetEle: event.target
+        });
+      });
+      this.handleSlideScrollStart();
+      this.slide.goToPage(index, 0);
+      this.$emit('nav-item-click', item, index);
+    },
+    onScroll: function onScroll(pos) {
+      var y = pos.y;
+      // let headerHeight = 0;
+      if (this.headerVNode) {
+        // 拿到实时的header内容的高度
+        this.headerHeight = this.headerVNode[0].elm.offsetHeight; // 获取头部高度的值
+      }
+      // this.headerHeight = headerHeight
+      this.currentScrollTop = y;
+      console.log(this.isSticky);
+      // stickyTop 必须为正数
+      this.$emit('wrapperScroll', pos);
+      if (this.pullUpLoad) {
+        var deltaY = DEFAULT_THRESHOLD;
+        if (_typeof(this.pullUpLoad) === 'object') {
+          var threshold = this.pullUpLoad.threshold;
+          if (threshold > 0) {
+            deltaY = threshold;
+          }
+        }
+        var child = this.children[this.currentPageIndex];
+        var _this$container$scrol = this.container.scroll,
+          maxScrollY = _this$container$scrol.maxScrollY,
+          _y = _this$container$scrol.y,
+          movingDirectionY = _this$container$scrol.movingDirectionY;
+        if (Math.abs(_y) + deltaY >= Math.abs(maxScrollY) && movingDirectionY === 1 && !child._isPullingUp) {
+          child._isPullingUp = true;
+          this.broadcast('multi-tab-item', "pullingUp-".concat(this.currentPageIndex), {
+            index: this.currentPageIndex
+          });
+        }
+      }
+    },
+    handleSlideScrollStart: function handleSlideScrollStart() {
+      var _this2 = this;
+      var minStickyTop = this.calculateStickyTop();
+      var bodyScrollTop = Math.abs(this.currentScrollTop);
+      this.children.forEach(function (child) {
+        if (_this2.currentPageIndex === child.index) {
+          // 如果是当前的滑块，记录当前滚动的距离
+          child._scrollTop = bodyScrollTop;
+        }
+        if (_this2.isSticky) {
+          // 达到了吸顶的条件
+          // 判断其余slide有没有记录
+          var scrollTop = child._scrollTop;
+          child._marginTop = Math.round(bodyScrollTop - Math.max(minStickyTop, scrollTop));
+        } else {
+          // child._scrollTop = 0
+          child._marginTop = 0;
+        }
+        child.$el.style.marginTop = child._marginTop + 'px';
+        child.$el.setAttribute('class', 'slide-page auto');
+      });
+    },
+    handleSlideScrollEnd: function handleSlideScrollEnd() {
+      var _this3 = this;
+      // scroll end
+      // 需要更新一下高度，不然后续滚动容器重置高度的时候，会出现偏离
+      this.updateHeight();
+      var minStickyTop = this.calculateStickyTop();
+      // 计算当前body需要滚动的距离，因为当前子模块的_marginTop会变成0
+      var bodyScrollTop = Math.abs(this.currentScrollTop) - this.children[this.currentPageIndex]._marginTop;
+      var className = '';
+      this.children.forEach(function (child) {
+        className = 'hidden';
+        if (child.index !== _this3.currentPageIndex) {
+          if (_this3.isSticky) {
+            var scrollTop = child._scrollTop;
+            child._marginTop = scrollTop ? bodyScrollTop - child._scrollTop : bodyScrollTop - minStickyTop;
+          } else {
+            // 没吸顶的状态下，margin-top为零，子模块不需要进行偏移处理
+            child._marginTop = 0;
+          }
+        } else {
+          child._marginTop = 0;
+          if (!_this3.isSticky) {
+            child._scrollTop = 0;
+          }
+          className = 'auto';
+        }
+        child.$el.style.marginTop = child._marginTop + 'px';
+        child.$el.setAttribute('class', "slide-page ".concat(className));
+      });
+      if (this.isSticky) {
+        this.$nextTick(function () {
+          _this3.container.scrollTo(0, -Math.max(bodyScrollTop, minStickyTop), 0);
+        });
+      }
+    },
+    calculateStickyTop: function calculateStickyTop() {
+      // 计算包含nav在内元素吸顶的实际距离
+      // 滚动容器最少需要滚动多少距离才能吸顶
+      var navHeight = this.$refs.navScroll[0].$el.offsetHeight + this.stickyTop; // 获取得到nav的高度
+      var slideOffsetTop = getOffset(this.slide.$el, this.container.$el).top; // slide容器距离顶部的高度
+      var offsetTop = slideOffsetTop - navHeight;
+      return Math.round(offsetTop);
+    },
+    handleSlideWillChange: function handleSlideWillChange(_ref2) {
+      var pageX = _ref2.pageX;
+      // 即将展示的坐标信息
+      this.nextPageIndex = pageX; // 即将展示的索引值
+    },
+    handleSlidePageChanged: function handleSlidePageChanged(_ref3) {
+      var pageX = _ref3.pageX;
+      // 已经切换到了当前的坐标信息
+      this.currentPageIndex = pageX;
+    },
+    updateHeight: function updateHeight() {
+      var _this4 = this;
+      // 更新整个容器的高度
+      // 确保拿到更新后的容器高度
+      var child = this.children[this.currentPageIndex].$el;
+      var content = child.children[0];
+      if (content) {
+        this.slideHeight = content.offsetHeight + 20 + 'px';
+        // 判断当前模块是否可以滚动
+        child._isScroll = parseFloat(this.slideHeight) > parseFloat(this.minSlideHeight);
+        this.$nextTick(function () {
+          _this4.container.scroll.refresh();
+        });
+      }
+    },
+    initialSlide: function initialSlide() {
+      var _this5 = this;
+      var _this$$refs = this.$refs,
+        container = _this$$refs.container,
+        slide = _this$$refs.slide,
+        navScroll = _this$$refs.navScroll;
+      this.slide = slide; // 滑块容器
+      this.container = container; // 滚动容器
+      this.children.forEach(function (item) {
+        item._marginTop = 0; // 当前子模块到达吸顶条件后，其余模块需要向下多少距离
+        item._scrollTop = 0; // 当前子模块的滚动容器(container)所处的滚动距离
+        item._isPullingUp = false; // 当前子模块是否处于下拉刷新中
+        item._isScroll = true; // 当前子模块是否可以滚动
+      });
+      // startX与startY不生效，需要手动进行切换
+      navScroll && navScroll.forEach(function (item) {
+        var navContent = item.$el.children[0];
+        var target = navContent.children[_this5.initialIndex];
+        item.scrollToElement(target, 0);
+      });
+    }
+  },
+  mounted: function mounted() {
+    var _this6 = this;
+    this.$nextTick(function () {
+      _this6.initialSlide();
+      // this.updateHeight(); // 更新容器高度
+      var navHeight = _this6.$refs.navScroll[0].$el.offsetHeight + _this6.stickyTop;
+      _this6.minSlideHeight = _this6.container.$el.clientHeight - navHeight + 'px';
+    });
+  },
+  created: function created() {
+    var _this7 = this;
+    // 初始化滑块
+    this.slideOptions.startPageXIndex = this.initialIndex;
+    this.currentPageIndex = this.initialIndex;
+    this.$on('pullingUp', function (_ref4) {
+      var index = _ref4.index,
+        isPullingUp = _ref4.isPullingUp;
+      // 用来控制上拉加载
+      _this7.children[index]._isPullingUp = isPullingUp;
+    });
+  },
+  render: function render() {
+    var h = arguments[0];
+    console.log(this.isSticky, 'isSticky');
+    return h("div", {
+      "class": "main-container-wrapper"
+    }, [this.genNav('sticky'), h(__vue_component__, {
+      "ref": "container",
+      "class": "multi-tab-wrapper",
+      "attrs": _objectSpread2({
+        "nestedScroll": {
+          groupId: 'dummy-divide'
+        }
+      }, this.$attrs),
+      "on": _objectSpread2({
+        "scroll": this.onScroll
+      }, this.$listeners)
+    }, [h("div", {
+      "class": "content-wrapper"
+    }, [this.genHeader(), this.genNav(), h(__vue_component__, {
+      "ref": "slide",
+      "class": "slide-wrapper",
+      "attrs": {
+        "bounce": false,
+        "scrollX": true,
+        "scrollY": false,
+        "observeDOM": false,
+        "nestedScroll": {
+          groupId: 'dummy-divide'
+        },
+        "slide": this.slideOptions
+      },
+      "on": {
+        "scrollStart": this.handleSlideScrollStart,
+        "scrollEnd": this.handleSlideScrollEnd,
+        "slideWillChange": this.handleSlideWillChange,
+        "slidePageChanged": this.handleSlidePageChanged
+      }
+    }, [h("div", {
+      "class": "slide-content",
+      "style": {
+        height: this.slideHeight,
+        'min-height': this.minSlideHeight
+      }
+    }, [this.slots()])])])])]);
+  }
+};
+
+export { MultiTab as default };

@@ -1,1 +1,32 @@
-function n(n,e){var o=e.$vnode.componentOptions;if(o&&o.children){var c=function(n){var e=[];return function n(o){o.forEach((function(o){e.push(o),o.componentInstance&&n(o.componentInstance.$children.map((function(n){return n.$vnode}))),o.children&&n(o.children)}))}(n),e}(o.children);n.sort((function(n,e){return c.indexOf(n.$vnode)-c.indexOf(e.$vnode)}))}}export{n as sortChildren};
+function flattenVNodes(vnodes) {
+  var result = [];
+  function traverse(vnodes) {
+    vnodes.forEach(function (vnode) {
+      result.push(vnode);
+      if (vnode.componentInstance) {
+        traverse(vnode.componentInstance.$children.map(function (item) {
+          return item.$vnode;
+        }));
+      }
+      if (vnode.children) {
+        traverse(vnode.children);
+      }
+    });
+  }
+  traverse(vnodes);
+  return result;
+}
+
+// sort children instances by vnodes order
+function sortChildren(children, parent) {
+  var componentOptions = parent.$vnode.componentOptions;
+  if (!componentOptions || !componentOptions.children) {
+    return;
+  }
+  var vnodes = flattenVNodes(componentOptions.children);
+  children.sort(function (a, b) {
+    return vnodes.indexOf(a.$vnode) - vnodes.indexOf(b.$vnode);
+  });
+}
+
+export { sortChildren };

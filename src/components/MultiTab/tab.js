@@ -1,10 +1,10 @@
 import { SlotsMixin } from '@/utils/mixins';
 import { ParentMixin } from '@/utils/relation';
-import Scroll from '@/components/Scroll';
+import Scroll from '../Scroll/index.vue';
 import { animate } from '@/utils/animate';
 import { getOffset } from '@/utils/dom';
 import emitter from '@/utils/emitter';
-import NavTitle from './nav-title';
+import NavTitle from '../MultiTitle/nav-title';
 import './tab.scss';
 const DEFAULT_THRESHOLD = 20;
 export default {

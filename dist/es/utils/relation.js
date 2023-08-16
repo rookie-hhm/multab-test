@@ -1,1 +1,68 @@
-import{defineProperty as n,toConsumableArray as t}from"../_virtual/_rollupPluginBabelHelpers.js";import{sortChildren as i}from"./vnodes.js";function e(e){var r=(arguments.length>1&&void 0!==arguments[1]?arguments[1]:{}).indexKey||"index";return{inject:n({},e,{default:null}),computed:n({parent:function(){return this.disableBindRelation?null:this[e]}},r,(function(){return this.bindRelation(),this.parent?this.parent.children.indexOf(this):null})),watch:{disableBindRelation:function(n){n||this.bindRelation()}},mounted:function(){this.bindRelation()},beforeDestroy:function(){var n=this;this.parent&&(this.parent.children=this.parent.children.filter((function(t){return t!==n})))},methods:{bindRelation:function(){if(this.parent&&-1===this.parent.children.indexOf(this)){var n=[].concat(t(this.parent.children),[this]);i(n,this.parent),this.parent.children=n}}}}}function r(t){return{provide:function(){return n({},t,this)},data:function(){return{children:[]}}}}export{e as ChildrenMixin,r as ParentMixin};
+import { defineProperty as _defineProperty, toConsumableArray as _toConsumableArray } from '../_virtual/_rollupPluginBabelHelpers.js';
+import { sortChildren } from './vnodes.js';
+
+function ChildrenMixin(_parent) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var indexKey = options.indexKey || 'index';
+  return {
+    inject: _defineProperty({}, _parent, {
+      "default": null
+    }),
+    computed: _defineProperty({
+      parent: function parent() {
+        if (this.disableBindRelation) {
+          return null;
+        }
+        return this[_parent];
+      }
+    }, indexKey, function () {
+      this.bindRelation();
+      if (this.parent) {
+        return this.parent.children.indexOf(this);
+      }
+      return null;
+    }),
+    watch: {
+      disableBindRelation: function disableBindRelation(val) {
+        if (!val) {
+          this.bindRelation();
+        }
+      }
+    },
+    mounted: function mounted() {
+      this.bindRelation();
+    },
+    beforeDestroy: function beforeDestroy() {
+      var _this = this;
+      if (this.parent) {
+        this.parent.children = this.parent.children.filter(function (item) {
+          return item !== _this;
+        });
+      }
+    },
+    methods: {
+      bindRelation: function bindRelation() {
+        if (!this.parent || this.parent.children.indexOf(this) !== -1) {
+          return;
+        }
+        var children = [].concat(_toConsumableArray(this.parent.children), [this]);
+        sortChildren(children, this.parent);
+        this.parent.children = children;
+      }
+    }
+  };
+}
+function ParentMixin(parent) {
+  return {
+    provide: function provide() {
+      return _defineProperty({}, parent, this);
+    },
+    data: function data() {
+      return {
+        children: []
+      };
+    }
+  };
+}
+
+export { ChildrenMixin, ParentMixin };

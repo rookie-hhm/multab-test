@@ -1,1 +1,8 @@
-import t from"./item.js";t.install=function(n){n.component(t.name,t)};var n=t;export{n as default};
+import MultiTabItem from './item.js';
+
+MultiTabItem.install = function (app) {
+  app.component(MultiTabItem.name, MultiTabItem);
+};
+var _MultiTabItem = MultiTabItem;
+
+export { _MultiTabItem as default };

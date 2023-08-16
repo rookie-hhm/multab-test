@@ -1,12 +1,14 @@
 {
-  "name": "multi-tab-packages",
-  "version": "1.0.0",
+  "name": "@rookie-ui/multi-tab-packages",
+  "version": "1.0.2",
   "description": "多tab滚动",
   "main": "index.js",
   "type": "module",
+  "module": "dist/es/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-rollup": "rollup -c --bundleConfigAsCjs rollup.config.js",
+    "build-rollup": "rollup -c --bundleConfigAsCjs rollup.config.js &&  npm run build:theme",
+    "build:theme": "gulp -f ./build-style.js",
     "build": "node build.js"
   },
   "keywords": [],
@@ -17,11 +19,19 @@
     "@babel/plugin-transform-runtime": "^7.22.10",
     "@babel/preset-env": "^7.22.10",
     "@babel/runtime": "^7.22.10",
+    "@better-scroll/core": "^2.5.1",
+    "@better-scroll/nested-scroll": "^2.5.1",
+    "@better-scroll/observe-dom": "^2.5.1",
+    "@better-scroll/pull-down": "^2.5.1",
+    "@better-scroll/pull-up": "^2.5.1",
+    "@better-scroll/slide": "^2.5.1",
     "@rollup/plugin-alias": "^5.0.0",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-terser": "^0.4.3",
+    "@types/gulp-autoprefixer": "^0.0.34",
+    "@types/gulp-less": "^0.0.33",
     "@vitejs/plugin-vue2": "^2.2.0",
     "@vitejs/plugin-vue2-jsx": "^1.1.0",
     "@vue/babel-helper-vue-jsx-merge-props": "^1.4.0",
@@ -29,11 +39,19 @@
     "element-plus": "^2.3.9",
     "element-ui": "^2.15.13",
     "fast-glob": "^3.3.1",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-less": "^5.0.0",
+    "gulp-sass": "^5.1.0",
+    "node-sass": "^9.0.0",
     "postcss": "^8.4.27",
     "rollup": "^3.28.0",
     "rollup-plugin-clear": "^2.0.7",
     "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-rename": "^1.0.1",
+    "rollup-plugin-rename-node-modules": "^1.3.1",
     "rollup-plugin-vue": "^5.1.9",
+    "sass": "^1.65.1",
     "vite": "^4.3.9",
     "vue": "^2.7.14",
     "vue-template-compiler": "^2.7.14"
@@ -48,5 +66,12 @@
   },
   "engines": {
     "node": ">=16"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "src"
+  ]
 }

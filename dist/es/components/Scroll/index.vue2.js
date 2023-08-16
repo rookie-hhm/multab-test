@@ -1,1 +1,143 @@
-import t from"../../node_modules/_@better-scroll_core@2.5.1@@better-scroll/core/dist/core.esm.js";import o from"../../node_modules/_@better-scroll_pull-up@2.5.1@@better-scroll/pull-up/dist/pull-up.esm.js";import e from"../../node_modules/_@better-scroll_observe-dom@2.5.1@@better-scroll/observe-dom/dist/observe-dom.esm.js";import s from"../../node_modules/_@better-scroll_nested-scroll@2.5.1@@better-scroll/nested-scroll/dist/nested-scroll.esm.js";import l from"../../node_modules/_@better-scroll_pull-down@2.5.1@@better-scroll/pull-down/dist/pull-down.esm.js";import r from"../../node_modules/_@better-scroll_slide@2.5.1@@better-scroll/slide/dist/slide.esm.js";import{toHump as i}from"../../utils/share.js";t.use(e).use(o).use(s).use(l).use(r);var n="horizontal",c={name:"BaseScroll",props:{direction:{type:String,default:""},data:{type:[Object,Array],default:function(){return[]}}},watch:{data:function(){setTimeout(this.refresh,20)}},methods:{initScroll:function(){var o=this.parseOptions();this.options=o,this.scroll=new t(this.$refs.scroll,o),this.proxyMethods(),this.registerListeners()},parseOptions:function(){var t={click:!0,scrollY:!0,probeType:3,pullUpLoad:this.$attrs.pullUpLoad||!1,observeDOM:!0},o=this.direction;this.direction&&(o=n?"vertical":n),t.eventPassthrough=o,Object.assign(t,this.$attrs);var e={},s="";return Object.keys(t).forEach((function(o){s=i(o),e[s]=t[o]})),e},proxyMethods:function(){for(var t in this.scroll)"function"==typeof this.scroll[t]&&(this[t]=this.scroll[t])},registerListeners:function(){var t=this,o=this.scroll.scroller.actionsHandler.hooks,e=this.options,s=e.pullDownRefresh,l=e.slide;o.on("click",(function(o){t.$emit("click",o)})),this.scroll.on("scroll",(function(o){t.$emit("scroll",o)})),this.scroll.on("scrollEnd",(function(o){t.$emit("scrollEnd",o)})),this.options.pullUpLoad&&this.scroll.on("pullingUp",(function(){t.$emit("pullingUp")})),this.scroll.on("beforeScrollStart",(function(){t.$emit("beforeScrollStart")})),this.scroll.on("scrollStart",(function(){t.$emit("scrollStart")})),s&&(this.scroll.on("pullingDown",(function(){t.$emit("pullingDown")})),this.scroll.on("enterThreshold",(function(){t.$emit("enterThreshold")})),this.scroll.on("leaveThreshold",(function(){t.$emit("leaveThreshold")}))),l&&(this.scroll.on("slideWillChange",(function(o){t.$emit("slideWillChange",o)})),this.scroll.on("slidePageChanged",(function(o){t.$emit("slidePageChanged",o)})))}},mounted:function(){this.$nextTick(this.initScroll)},destroyed:function(){this.scroll.destroy()}};export{c as default};
+import BScroll from '@better-scroll/core';
+import PullUp from '@better-scroll/pull-up';
+import ObserveDOM from '@better-scroll/observe-dom';
+import NestedScroll from '@better-scroll/nested-scroll';
+import PullDown from '@better-scroll/pull-down';
+import Slide from '@better-scroll/slide';
+import { toHump } from '../../utils/share.js';
+
+//
+//
+//
+//
+//
+//
+
+BScroll.use(ObserveDOM).use(PullUp).use(NestedScroll).use(PullDown).use(Slide);
+var DIRECTION_V = 'vertical';
+var script = {
+  name: 'BaseScroll',
+  props: {
+    direction: {
+      type: String,
+      "default": ''
+    },
+    data: {
+      type: [Object, Array],
+      "default": function _default() {
+        return [];
+      }
+    }
+  },
+  watch: {
+    data: function data() {
+      setTimeout(this.refresh, 20);
+    }
+  },
+  methods: {
+    initScroll: function initScroll() {
+      var options = this.parseOptions();
+      this.options = options;
+      this.scroll = new BScroll(this.$refs.scroll, options);
+      this.proxyMethods();
+      this.registerListeners();
+    },
+    parseOptions: function parseOptions() {
+      var defaultOptions = {
+        click: true,
+        scrollY: true,
+        probeType: 3,
+        pullUpLoad: this.$attrs.pullUpLoad || false,
+        observeDOM: true
+      };
+      var eventPassthrough = this.direction;
+      if (this.direction) {
+        eventPassthrough = DIRECTION_V ;
+      }
+      defaultOptions.eventPassthrough = eventPassthrough;
+      Object.assign(defaultOptions, this.$attrs);
+      var result = {};
+      var newKey = '';
+      Object.keys(defaultOptions).forEach(function (key) {
+        // 可以将key值驼峰化
+        newKey = toHump(key);
+        result[newKey] = defaultOptions[key];
+      });
+      return result;
+    },
+    proxyMethods: function proxyMethods() {
+      for (var key in this.scroll) {
+        if (typeof this.scroll[key] === 'function') {
+          this[key] = this.scroll[key];
+        }
+      }
+    },
+    registerListeners: function registerListeners() {
+      var _this = this;
+      var hooks = this.scroll.scroller.actionsHandler.hooks;
+      var _this$options = this.options,
+        pullDownRefresh = _this$options.pullDownRefresh,
+        slide = _this$options.slide;
+      // better-scroll的点击事件
+      hooks.on('click', function (e) {
+        _this.$emit('click', e);
+      });
+      this.scroll.on('scroll', function (pos) {
+        _this.$emit('scroll', pos);
+      });
+      this.scroll.on('scrollEnd', function (pos) {
+        _this.$emit('scrollEnd', pos);
+      });
+      this.options.pullUpLoad && this.scroll.on('pullingUp', function () {
+        _this.$emit('pullingUp');
+      });
+      this.scroll.on('beforeScrollStart', function () {
+        _this.$emit('beforeScrollStart');
+      });
+      this.scroll.on('scrollStart', function () {
+        _this.$emit('scrollStart');
+      });
+      if (pullDownRefresh) {
+        this.scroll.on('pullingDown', function () {
+          _this.$emit('pullingDown');
+        });
+        this.scroll.on('enterThreshold', function () {
+          _this.$emit('enterThreshold');
+        });
+        this.scroll.on('leaveThreshold', function () {
+          _this.$emit('leaveThreshold');
+        });
+      }
+      if (slide) {
+        this.scroll.on('slideWillChange', function (page) {
+          _this.$emit('slideWillChange', page);
+        });
+        this.scroll.on('slidePageChanged', function (page) {
+          _this.$emit('slidePageChanged', page);
+        });
+      }
+    } // scrollToElement() {
+    //   this.scroll && this.scroll.scrollToElement(...arguments)
+    // },
+    // scrollTo() {
+    //   this.scroll && this.scroll.scrollTo(...arguments)
+    // },
+    // enable() {
+    //   this.scroll && this.scroll.enable()
+    // },
+    // disable() {
+    //   this.scroll && this.scroll.disable()
+    // },
+    // refresh() {
+    //   this.scroll && this.scroll.refresh()
+    // }
+  },
+  mounted: function mounted() {
+    this.$nextTick(this.initScroll);
+  },
+  destroyed: function destroyed() {
+    this.scroll.destroy();
+  }
+};
+
+export { script as default };

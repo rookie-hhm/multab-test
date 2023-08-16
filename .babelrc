@@ -2,9 +2,9 @@
   "presets": [
     ["@babel/preset-env",
       {
-        "modules": false,
-        "useBuiltIns": "usage",
-        "corejs": "3.25.0"
+        // "modules": false,
+        // "useBuiltIns": "usage",
+        // "corejs": "3.25.0"
       }
     ],
     "@vue/babel-preset-jsx" 

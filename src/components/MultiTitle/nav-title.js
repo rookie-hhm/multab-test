@@ -1,5 +1,5 @@
-import './nav-title.scss'
 import { SlotsMixin } from "@/utils/mixins"
+import './nav-title.scss'
 export default {
   mixins: [SlotsMixin],
   props: {

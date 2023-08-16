@@ -1,1 +1,17 @@
-var t={methods:{slots:function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"default",o=arguments.length>1?arguments[1]:void 0,s=this.$slots,e=this.$scopedSlots[t];return e?e(o):s[t]}}};export{t as SlotsMixin};
+var SlotsMixin = {
+  methods: {
+    slots: function slots() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+      var props = arguments.length > 1 ? arguments[1] : undefined;
+      var $slots = this.$slots,
+        $scopedSlots = this.$scopedSlots;
+      var scopedSlot = $scopedSlots[name];
+      if (scopedSlot) {
+        return scopedSlot(props);
+      }
+      return $slots[name];
+    }
+  }
+};
+
+export { SlotsMixin };
