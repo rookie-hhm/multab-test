@@ -2,7 +2,7 @@
 先执行`npm i` 安装依赖 在`node@16`下进行操作
 ### 问题
 
-1. 在`rollup`配置了`preserveModules: true`的情况下, 执行`npm run build-rollup`之后，生成了`dist`目录，但是`dist`目录下会有`node_modules`(里面是一些第三方依赖库)，怎么把这个目录删掉，只保留`src`目录下的结构
+1. 在`rollup`配置了`preserveModules: true`的情况下, 执行`npm run build-rollup`之后，生成了`dist`目录，但是`dist`目录下会有`node_modules`(里面是一些第三方依赖库)，怎么把这个目录删掉，只保留`src`目录下的结构(解决)
 
 
 2.

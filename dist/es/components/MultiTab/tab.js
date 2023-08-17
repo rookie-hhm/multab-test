@@ -6,7 +6,7 @@ import { animate } from '../../utils/animate.js';
 import { getOffset } from '../../utils/dom.js';
 import emitter from '../../utils/emitter.js';
 import NavTitle from '../MultiTitle/nav-title.js';
-import '../../src/components/MultiTab/tab.css';
+import './tab.scss.js';
 
 var DEFAULT_THRESHOLD = 20;
 var MultiTab = {

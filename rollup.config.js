@@ -14,7 +14,7 @@ const targetDir = path.resolve(__dirname, 'dist')
 const { devDependencies, dependencies } = pkg
 export default {
   input: path.resolve(__dirname, 'src/index.js'),
-  external: [...Object.keys(devDependencies), ...Object.keys(dependencies), /^\.(\/|\\).*\.scss$/],
+  external: [...Object.keys(devDependencies), ...Object.keys(dependencies)],
   plugins: [
     clear({
       targets: [targetDir],
@@ -35,25 +35,25 @@ export default {
       extensions: ['.vue', '.js', '.scss', '.jsx']
     }),
     renameNodeModules('dependencies'),
-    {
-      name: "style",
-      generateBundle(config, bundle) {
-        //这里可以获取打包后的文件目录以及代码code
-        const keys = Object.keys(bundle);
+    // {
+    //   name: "style",
+    //   generateBundle(config, bundle) {
+    //     //这里可以获取打包后的文件目录以及代码code
+    //     const keys = Object.keys(bundle);
 
-        for (const key of keys) {
-          const bundler = bundle[key];
-          //rollup内置方法,将所有输出文件code中的.scss变成.css
-          console.log(bundler.code, 'code')
-          this.emitFile({
-            type: "asset",
-            fileName: key, //文件名名不变
-            source: bundler.code.replace(/\.scss/g, ".css"),
-          });
-        }
-      }
-    },
-    // postcss(),
+    //     for (const key of keys) {
+    //       const bundler = bundle[key];
+    //       //rollup内置方法,将所有输出文件code中的.scss变成.css
+    //       console.log(bundler.code, 'code')
+    //       this.emitFile({
+    //         type: "asset",
+    //         fileName: key, //文件名名不变
+    //         source: bundler.code.replace(/\.scss/g, ".css"),
+    //       });
+    //     }
+    //   }
+    // },
+    postcss(),
     // terser()
   ],
   // treeshake: {

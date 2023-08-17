@@ -2,7 +2,7 @@ import { createForOfIteratorHelper as _createForOfIteratorHelper } from '../../_
 import { SlotsMixin } from '../../utils/mixins.js';
 import { ChildrenMixin } from '../../utils/relation.js';
 import emitter from '../../utils/emitter.js';
-import '../../src/components/MultiTabItem/item.css';
+import './item.scss.js';
 
 var MultiTabItem = {
   name: 'multi-tab-item',
